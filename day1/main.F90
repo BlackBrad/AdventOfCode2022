@@ -1,3 +1,5 @@
+#define DAY
+
 #ifdef REAL
 #define INPUT_FILE "input.txt"
 #else
@@ -13,10 +15,14 @@ module file_helpers
             integer :: file_data_length                                ! Output
             integer :: iFile, ios, line_number
 
+            character (len=FILE_LINE_LENGTH) :: file_name
+
             iFile = 1
             line_number = 0
 
-            open (iFile, file=INPUT_FILE, action="read")
+            file_name = DAY//INPUT_FILE
+
+            open (iFile, file=file_name, action="read")
 
             ! Count the number of lines in the file so that we can assign an array size
             call get_file_length(iFile, file_data_length)
@@ -79,10 +85,6 @@ implicit none
     largest_count = 0
     file_data_length = 0
     top_elves_size = 3
-
-    top_elves(1) = -1
-    top_elves(2) = -1
-    top_elves(3) = -1
 
     ! Read the file into the array
     call read_file(file_data, file_data_length)
