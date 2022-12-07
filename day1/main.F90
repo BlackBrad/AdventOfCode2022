@@ -1,4 +1,4 @@
-#define DAY
+#define DAY "day1"
 
 #ifdef REAL
 #define INPUT_FILE "input.txt"
