@@ -1,4 +1,4 @@
-#define DAY "day1/"
+#define DAY "day2/"
 
 #ifdef REAL
 #define INPUT_FILE "input.txt"
@@ -8,18 +8,32 @@
 
 #define FILE_LINE_LENGTH 255
 
+#define ROCK_VALUE 1
+#define PAPER_VALUE 2
+#define SCISSORS_VALUE 3
+#define DRAW_VALUE 3
+#define WIN_VALUE 6
+
+#define ROCK     "A"
+#define PAPER    "B"
+#define SCISSORS "C"
+
+#define RESULT_LOSE "X"
+#define RESULT_DRAW  "Y"
+#define RESULT_WIN   "Z"
+
 module file_helpers
     contains
         subroutine read_file(file_data, file_data_length)
             character (len=FILE_LINE_LENGTH), pointer :: file_data (:) ! Output
             integer :: file_data_length                                ! Output
             integer :: iFile, ios, line_number
-
-            character (len=FILE_LINE_LENGTH) :: file_name
+            character (len=FILE_LINE_LENGTH) file_name
 
             iFile = 1
             line_number = 0
 
+            ! Get the name of the file to open
             file_name = DAY//INPUT_FILE
 
             open (iFile, file=file_name, action="read")
@@ -49,7 +63,6 @@ module file_helpers
             ! Count the number of lines in the file so that we can assign an array size
             do
                 read (iFile, "(a)", IOSTAT=ios) file_line_data
-
                 if (ios < 0) then
                     exit
                 endif
@@ -77,50 +90,48 @@ program main
 use file_helpers
 implicit none
     character (len=FILE_LINE_LENGTH), pointer :: file_data (:)
-    integer :: file_data_length, current_calorie_count, largest_count, this_line, i
-    integer, dimension(3) :: top_elves
-    integer :: top_elves_size, j, current_index
-
-    current_calorie_count = 0
-    largest_count = 0
-    file_data_length = 0
-    top_elves_size = 3
+    integer :: file_data_length
+    integer :: i, total_score
 
     ! Read the file into the array
     call read_file(file_data, file_data_length)
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ! Your code goes below here
+
+    total_score = 0
+
     do i = 1, file_data_length
-        if (file_data(i) == "") then
-            current_index = 1
-            do j = 1, top_elves_size
-                ! Get the index with the smallest value
-                if (top_elves(j) < top_elves(current_index)) then
-                    current_index = j
-                end if
-            end do
-
-            if (current_calorie_count > top_elves(current_index)) then
-                top_elves(current_index) = current_calorie_count
+        if (file_data(i)(1:1) == ROCK) then
+            if (file_data(i)(3:3) == RESULT_WIN) then
+                total_score = total_score + PAPER_VALUE + WIN_VALUE
+            else if (file_data(i)(3:3) == RESULT_DRAW) then
+                total_score = total_score + ROCK_VALUE + DRAW_VALUE
+            else if (file_data(i)(3:3) == RESULT_LOSE) then
+                total_score = total_score + SCISSORS_VALUE
             end if
-
-            current_calorie_count = 0
-        else
-            ! Convert the character from the array to an integer for addition
-            read (file_data(i), *) this_line
-            current_calorie_count = current_calorie_count + this_line
-            !write (*, *) "Current count: ", current_calorie_count
+        else if (file_data(i)(1:1) == PAPER) then
+            if (file_data(i)(3:3) == RESULT_WIN) then
+                total_score = total_score + SCISSORS_VALUE + WIN_VALUE
+            else if (file_data(i)(3:3) == RESULT_DRAW) then
+                total_score = total_score + PAPER_VALUE + DRAW_VALUE
+            else if (file_data(i)(3:3) == RESULT_LOSE) then
+                total_score = total_score + ROCK_VALUE
+            end if
+        else if (file_data(i)(1:1) == SCISSORS) then
+            if (file_data(i)(3:3) == RESULT_WIN) then
+                total_score = total_score + ROCK_VALUE + WIN_VALUE
+            else if (file_data(i)(3:3) == RESULT_DRAW) then
+                total_score = total_score + SCISSORS_VALUE + DRAW_VALUE
+            else if (file_data(i)(3:3) == RESULT_LOSE) then
+                total_score = total_score + PAPER_VALUE
+            end if
         end if
     end do
 
-    do i = 1, top_elves_size
-        largest_count = largest_count + top_elves(i)
-    end do
-
-    print *, largest_count
-
     ! Remember to free your memory
     deallocate (file_data)
+
+    print *, total_score
 
 end program main
