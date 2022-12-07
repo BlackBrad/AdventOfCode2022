@@ -1,3 +1,5 @@
+#define DAY "day2/"
+
 #ifdef REAL
 #define INPUT_FILE "input.txt"
 #else
@@ -26,11 +28,15 @@ module file_helpers
             character (len=FILE_LINE_LENGTH), pointer :: file_data (:) ! Output
             integer :: file_data_length                                ! Output
             integer :: iFile, ios, line_number
+            character (len=FILE_LINE_LENGTH) file_name
 
             iFile = 1
             line_number = 0
 
-            open (iFile, file=INPUT_FILE, action="read")
+            ! Get the name of the file to open
+            file_name = DAY//INPUT_FILE
+
+            open (iFile, file=file_name, action="read")
 
             ! Count the number of lines in the file so that we can assign an array size
             call get_file_length(iFile, file_data_length)
@@ -102,6 +108,20 @@ implicit none
                 total_score = total_score + DRAW_VALUE
             else if (file_data(i)(1:1) == SCISSORS) then
                 total_score = total_score + WIN_VALUE
+            end if
+        else if (file_data(i)(3:3) == REPLY_PAPER) then
+            total_score = total_score + PAPER_VALUE
+            if (file_data(i)(1:1) == ROCK) then
+                total_score = total_score + WIN_VALUE
+            else if (file_data(i)(1:1) == PAPER) then
+                total_score = total_score + DRAW_VALUE
+            end if
+        else if (file_data(i)(3:3) == REPLY_SCISSORS) then
+            total_score = total_score + SCISSORS_VALUE
+            if (file_data(i)(1:1) == PAPER) then
+                total_score = total_score + WIN_VALUE
+            else if (file_data(i)(1:1) == SCISSORS) then
+                total_score = total_score + DRAW_VALUE
             end if
         end if
     end do
