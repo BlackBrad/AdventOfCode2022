@@ -1,3 +1,6 @@
+! Set the day here otherwise we can't open the file!
+#define DAY ""
+
 #ifdef REAL
 #define INPUT_FILE "input.txt"
 #else
@@ -12,9 +15,12 @@ module file_helpers
             character (len=FILE_LINE_LENGTH), pointer :: file_data (:) ! Output
             integer :: file_data_length                                ! Output
             integer :: iFile, ios, line_number
+            character (len=FILE_LINE_LENGTH) :: file_name
 
             iFile = 1
             line_number = 0
+
+            file_name = DAY//INPUT_FILE
 
             open (iFile, file=INPUT_FILE, action="read")
 
@@ -54,12 +60,8 @@ module file_helpers
         end subroutine get_file_length
 
         subroutine read_file_into_array(iFile, array, file_data_length)
-            integer :: iFile, array_index, file_data_length, ios
+            integer :: iFile, file_data_length, ios
             character (len=FILE_LINE_LENGTH), pointer :: array (:)
-
-            array_index = 1
-
-            iFile = 1
 
             do i = 1, file_data_length
                 read (iFile, "(a)", IOSTAT=ios) array(i)
