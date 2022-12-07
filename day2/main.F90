@@ -18,9 +18,9 @@
 #define PAPER    "B"
 #define SCISSORS "C"
 
-#define REPLY_ROCK      "X"
-#define REPLY_PAPER     "Y"
-#define REPLY_SCISSORS  "Z"
+#define RESULT_LOSE "X"
+#define RESULT_DRAW  "Y"
+#define RESULT_WIN   "Z"
 
 module file_helpers
     contains
@@ -102,26 +102,29 @@ implicit none
     total_score = 0
 
     do i = 1, file_data_length
-        if (file_data(i)(3:3) == REPLY_ROCK) then
-            total_score = total_score + ROCK_VALUE
-            if (file_data(i)(1:1) == ROCK) then
-                total_score = total_score + DRAW_VALUE
-            else if (file_data(i)(1:1) == SCISSORS) then
-                total_score = total_score + WIN_VALUE
+        if (file_data(i)(1:1) == ROCK) then
+            if (file_data(i)(3:3) == RESULT_WIN) then
+                total_score = total_score + PAPER_VALUE + WIN_VALUE
+            else if (file_data(i)(3:3) == RESULT_DRAW) then
+                total_score = total_score + ROCK_VALUE + DRAW_VALUE
+            else if (file_data(i)(3:3) == RESULT_LOSE) then
+                total_score = total_score + SCISSORS_VALUE
             end if
-        else if (file_data(i)(3:3) == REPLY_PAPER) then
-            total_score = total_score + PAPER_VALUE
-            if (file_data(i)(1:1) == ROCK) then
-                total_score = total_score + WIN_VALUE
-            else if (file_data(i)(1:1) == PAPER) then
-                total_score = total_score + DRAW_VALUE
+        else if (file_data(i)(1:1) == PAPER) then
+            if (file_data(i)(3:3) == RESULT_WIN) then
+                total_score = total_score + SCISSORS_VALUE + WIN_VALUE
+            else if (file_data(i)(3:3) == RESULT_DRAW) then
+                total_score = total_score + PAPER_VALUE + DRAW_VALUE
+            else if (file_data(i)(3:3) == RESULT_LOSE) then
+                total_score = total_score + ROCK_VALUE
             end if
-        else if (file_data(i)(3:3) == REPLY_SCISSORS) then
-            total_score = total_score + SCISSORS_VALUE
-            if (file_data(i)(1:1) == PAPER) then
-                total_score = total_score + WIN_VALUE
-            else if (file_data(i)(1:1) == SCISSORS) then
-                total_score = total_score + DRAW_VALUE
+        else if (file_data(i)(1:1) == SCISSORS) then
+            if (file_data(i)(3:3) == RESULT_WIN) then
+                total_score = total_score + ROCK_VALUE + WIN_VALUE
+            else if (file_data(i)(3:3) == RESULT_DRAW) then
+                total_score = total_score + SCISSORS_VALUE + DRAW_VALUE
+            else if (file_data(i)(3:3) == RESULT_LOSE) then
+                total_score = total_score + PAPER_VALUE
             end if
         end if
     end do
