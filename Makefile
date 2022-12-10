@@ -13,6 +13,7 @@ all:
 
 	$(FC) $(FFLAGS) day1/$(FILE_NAME) $(REAL_SET) -o day1_f90
 	$(FC) $(FFLAGS) day2/$(FILE_NAME) $(REAL_SET) -o day2_f90
+	$(FC) $(FFLAGS) day3/$(FILE_NAME) $(REAL_SET) -o day3_f90
 
 clean:
 	rm *_f90
